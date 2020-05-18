@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array
+        name="mezcla">
+        <item
+            >Elija Su Mezcla</item>
+        <item
+            >Coca Cola</item>
+        <item
+            >Coca Cola Light</item>
+        <item
+            >Coca Cola Zero</item>
+        <item
+            >Fanta Naranja</item>
+        <item
+            >Fanta Limon</item>
+        <item
+            >Sprite</item>
+        <item
+            >Red Bull (+1 Euro)</item>
+
+
+    </string-array>
+
+</resources>

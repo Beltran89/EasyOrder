@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:padding="10dp">
+
+
+    <TextView
+        android:id="@+id/linea_producto_carro"
+        style="@style/textos"
+
+        android:layout_width="338dp" />
+
+
+    <ImageView
+        android:id="@+id/botonBorrar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:onClick="borrarProducto"
+        android:src="@drawable/edit" />
+
+
+</LinearLayout>
