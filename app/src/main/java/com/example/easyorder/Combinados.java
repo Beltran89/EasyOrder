@@ -1283,6 +1283,77 @@ public class Combinados extends AppCompatActivity {
                         dialog.create();
                         dialog.show();
                         break;
+                    case "Larios Rose":
+                        cod_prod = "LRR";
+                        precioDouble = metodos.obtenerPrecio(listaProducto,cod_prod);
+
+                        dialog_img.setImageResource(R.drawable.lariosrose);
+                        dialog_title.setText(selected);
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
+
+                        dialog.setView(vista);
+                        numberPicker.setMaxValue(20);
+                        numberPicker.setMinValue(0);
+
+
+                        numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                            @Override
+                            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                                cantidad[0] = numberPicker.getValue();
+                            }
+                        });
+
+
+                        dialog.setPositiveButton("Añadir", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                final String tipoMezcla;
+                                final double precioFinal;
+                                if (mezcla.getSelectedItemPosition() == 0) {
+
+
+                                } else {
+                                    if (mezcla.getSelectedItemPosition() == 1) {
+                                        tipoMezcla = mezcla.getSelectedItem().toString();
+                                        precioFinal = precioDouble;
+
+                                    } else if (mezcla.getSelectedItemPosition() == 2) {
+                                        tipoMezcla = mezcla.getSelectedItem().toString();
+                                        precioFinal = precioDouble;
+
+                                    } else if (mezcla.getSelectedItemPosition() == 3) {
+                                        tipoMezcla = mezcla.getSelectedItem().toString();
+                                        precioFinal = precioDouble;
+
+                                    } else if (mezcla.getSelectedItemPosition() == 4) {
+                                        tipoMezcla = mezcla.getSelectedItem().toString();
+                                        precioFinal = precioDouble;
+
+                                    } else if (mezcla.getSelectedItemPosition() == 5) {
+                                        tipoMezcla = mezcla.getSelectedItem().toString();
+                                        precioFinal = precioDouble;
+
+                                    } else if (mezcla.getSelectedItemPosition() == 6) {
+                                        tipoMezcla = mezcla.getSelectedItem().toString();
+                                        precioFinal = precioDouble;
+
+                                    } else {
+                                        tipoMezcla = "Red Bull";
+                                        precioFinal = precioDouble + 1.00;
+
+                                    }
+
+                                    if (cantidad[0] != 0)
+                                        controladorDB.addProductoCombinado(numerTable, cod_prod, selected, precioFinal, cantidad[0], tipoMezcla);
+                                }
+                            }
+
+                        });
+
+                        dialog.setNegativeButton("Cancelar", null);
+                        dialog.create();
+                        dialog.show();
+                        break;
 
  /////////////////              VODKA   //////////////////////
 

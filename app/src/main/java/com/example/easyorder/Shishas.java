@@ -281,6 +281,7 @@ public class Shishas extends AppCompatActivity {
                     case "Sandia Helada":
                         cod_prod= "SAH";
 
+                        dialog.setView(vista);
                         numberPicker.setMaxValue(20);
                         numberPicker.setMinValue(0);
                         numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
@@ -552,7 +553,7 @@ public class Shishas extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
 
                                 if (cantidad[0]!=0)
-                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosPremium.get(6), metodos.obtenerPrecio(listaProducto,cod_prod), cantidad[0]);
+                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosPremium.get(7), metodos.obtenerPrecio(listaProducto,cod_prod), cantidad[0]);
                             }
                         });
                         dialog.setNegativeButton("Cancelar", null);
@@ -583,7 +584,7 @@ public class Shishas extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
 
                                 if (cantidad[0]!=0)
-                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosPremium.get(7), metodos.obtenerPrecio(listaProducto,cod_prod), cantidad[0]);
+                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosPremium.get(8), metodos.obtenerPrecio(listaProducto,cod_prod), cantidad[0]);
 
                             }
                         });

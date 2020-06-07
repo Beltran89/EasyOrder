@@ -204,7 +204,7 @@ public class Batidos extends AppCompatActivity {
                         cod_prod= "BPR";
                         dialog.setView(vista);
                         numberPicker.setMaxValue(20);
-                        numberPicker.setMinValue(1);
+                        numberPicker.setMinValue(0);
                         numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
                             @Override
                             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
