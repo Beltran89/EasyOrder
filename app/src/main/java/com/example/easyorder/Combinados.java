@@ -5,21 +5,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.NumberPicker;
-import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,23 +30,17 @@ import java.util.List;
 import java.util.Map;
 
 public class Combinados extends AppCompatActivity {
-    TextView tipoRon, tipoGin, tipoVodka, tipoWisky;
-    ListView ron, gin, vodka, wisky;
-    SimpleAdapter ADAhere;
     String numerTable, tipoRonSting, tipoVodkaString, tipoGinString, tipoWiskyString ;
-    List<Map<String, String>> data;
-    ArrayAdapter<String> mAdapter, mAdapter2;
-
-    // String[] standard;
     ControladorDB controladorDB;
     private HashMap<String, String> listaProducto;
     private ArrayList<String> visualizarProductosRon, visualizarProductosVodka, visualizarProductosGin, visualizarProductosWisky, visualizarRefrescos ;
-    ExpandableListAdapter expListAdapter;
+
 
     List<String> groupList;
     List<String> childList;
     Map<String, List<String>> combinadosCollection;
     ExpandableListView expListView;
+    Metodos metodos;
 
 
 
@@ -60,6 +49,7 @@ public class Combinados extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_combinados);
+        getSupportActionBar().setTitle("Combinados");
 
 
 
@@ -72,6 +62,8 @@ public class Combinados extends AppCompatActivity {
         numerTable = extra.getString("numeroMesa");
 
     }
+
+
     private void createGroupList() {
         groupList = new ArrayList<String>();
         groupList.add("Ron");
@@ -96,7 +88,9 @@ public class Combinados extends AppCompatActivity {
                                         int groupPosition, int childPosition, long id) {
                 final String selected = (String) expListAdapter.getChild(
                         groupPosition, childPosition);
-
+                AlertDialog.Builder dialog = new AlertDialog.Builder(Combinados.this);
+                View vista = getLayoutInflater().inflate(R.layout.dialog_combinados, null);
+                metodos = new Metodos();
 
                 final String cod_prod;
                 final String codContr;
@@ -110,8 +104,7 @@ public class Combinados extends AppCompatActivity {
                 final String cod_producto;
                 final Insert insertar = new Insert();
 
-                AlertDialog.Builder dialog = new AlertDialog.Builder(Combinados.this);
-                View vista = getLayoutInflater().inflate(R.layout.dialog_combinados, null);
+
 
 
                 final TextView dialog_title = vista.findViewById(R.id.titulo);
@@ -126,15 +119,12 @@ public class Combinados extends AppCompatActivity {
                     ///////////////////////////       Ron    //////////////////////////////
                     case "Barcelo":
                         cod_prod = "BCL";
-                        compuesto = listaProducto.get(cod_prod);
-                        partes = compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble = Double.parseDouble(precio);
-                        nomProducto= partes[0];
+                        precioDouble = metodos.obtenerPrecio(listaProducto,cod_prod);
+
 
                         dialog_img.setImageResource(R.drawable.barcelo);
-                        dialog_title.setText(nomProducto);
-                        dialog_precio.setText("Precio: " + precio +"€");
+                        dialog_title.setText(selected);
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
                         dialog.setView(vista);
                         numberPicker.setMaxValue(20);
@@ -153,8 +143,7 @@ public class Combinados extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 final String tipoMezcla;
-                                final double precioFinal;
-                                if (mezcla.getSelectedItemPosition() == 0) {
+                                final double precioFinal;if (mezcla.getSelectedItemPosition() == 0) {
 
 
                                 } else {
@@ -189,7 +178,7 @@ public class Combinados extends AppCompatActivity {
                                     }
 
                                     if (cantidad[0] != 0)
-                                        controladorDB.addProductoCombinado(numerTable, cod_prod, nomProducto, precioFinal, cantidad[0], tipoMezcla);
+                                        controladorDB.addProductoCombinado(numerTable, cod_prod, selected, precioFinal, cantidad[0], tipoMezcla);
                                 }
                             }
 
@@ -202,15 +191,12 @@ public class Combinados extends AppCompatActivity {
 
                     case "Brugal":
                         cod_prod = "BGL";
-                        compuesto = listaProducto.get(cod_prod);
-                        partes = compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble = Double.parseDouble(precio);
-                        nomProducto= partes[0];
+                        precioDouble = metodos.obtenerPrecio(listaProducto,cod_prod);
+
 
                         dialog_img.setImageResource(R.drawable.brugal);
-                        dialog_title.setText(nomProducto);
-                        dialog_precio.setText("Precio: " + precio +"€");
+                        dialog_title.setText(selected);
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
                         dialog.setView(vista);
                         numberPicker.setMaxValue(20);
@@ -265,7 +251,7 @@ public class Combinados extends AppCompatActivity {
                                     }
 
                                     if (cantidad[0] != 0)
-                                        controladorDB.addProductoCombinado(numerTable, cod_prod, nomProducto, precioFinal, cantidad[0], tipoMezcla);
+                                        controladorDB.addProductoCombinado(numerTable, cod_prod, selected, precioFinal, cantidad[0], tipoMezcla);
                                 }
                             }
 
@@ -278,15 +264,12 @@ public class Combinados extends AppCompatActivity {
 
                     case "Cacique":
                         cod_prod = "CCQ";
-                        compuesto = listaProducto.get(cod_prod);
-                        partes = compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble = Double.parseDouble(precio);
-                        nomProducto= partes[0];
+                        precioDouble = metodos.obtenerPrecio(listaProducto,cod_prod);
+
 
                         dialog_img.setImageResource(R.drawable.cacique);
-                        dialog_title.setText(nomProducto);
-                        dialog_precio.setText("Precio: " + precio +"€");
+                        dialog_title.setText(selected);
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
                         dialog.setView(vista);
                         numberPicker.setMaxValue(20);
@@ -341,7 +324,7 @@ public class Combinados extends AppCompatActivity {
                                     }
 
                                     if (cantidad[0] != 0)
-                                        controladorDB.addProductoCombinado(numerTable, cod_prod, nomProducto, precioFinal, cantidad[0], tipoMezcla);
+                                        controladorDB.addProductoCombinado(numerTable, cod_prod, selected, precioFinal, cantidad[0], tipoMezcla);
                                 }
                             }
 
@@ -351,17 +334,15 @@ public class Combinados extends AppCompatActivity {
                         dialog.create();
                         dialog.show();
                         break;
+
                     case "Havana":
-                        cod_prod = "HVN";
-                        compuesto = listaProducto.get(cod_prod);
-                        partes = compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble = Double.parseDouble(precio);
-                        nomProducto= partes[0];
+                        cod_prod = "HVN";;
+                        precioDouble = metodos.obtenerPrecio(listaProducto,cod_prod);
+
 
                         dialog_img.setImageResource(R.drawable.havana);
-                        dialog_title.setText(nomProducto);
-                        dialog_precio.setText("Precio: " + precio +"€");
+                        dialog_title.setText(selected);
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
                         dialog.setView(vista);
                         numberPicker.setMaxValue(20);
@@ -416,7 +397,7 @@ public class Combinados extends AppCompatActivity {
                                     }
 
                                     if (cantidad[0] != 0)
-                                        controladorDB.addProductoCombinado(numerTable, cod_prod, nomProducto, precioFinal, cantidad[0], tipoMezcla);
+                                        controladorDB.addProductoCombinado(numerTable, cod_prod, selected, precioFinal, cantidad[0], tipoMezcla);
                                 }
                             }
 
@@ -426,17 +407,15 @@ public class Combinados extends AppCompatActivity {
                         dialog.create();
                         dialog.show();
                         break;
+
                     case "Legendario":
                         cod_prod = "LGD";
-                        compuesto = listaProducto.get(cod_prod);
-                        partes = compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble = Double.parseDouble(precio);
-                        nomProducto= partes[0];
+                        precioDouble = metodos.obtenerPrecio(listaProducto,cod_prod);
+
 
                         dialog_img.setImageResource(R.drawable.legendario);
-                        dialog_title.setText(nomProducto);
-                        dialog_precio.setText("Precio: " + precio +"€");
+                        dialog_title.setText(selected);
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
                         dialog.setView(vista);
                         numberPicker.setMaxValue(20);
@@ -491,7 +470,7 @@ public class Combinados extends AppCompatActivity {
                                     }
 
                                     if (cantidad[0] != 0)
-                                        controladorDB.addProductoCombinado(numerTable, cod_prod, nomProducto, precioFinal, cantidad[0], tipoMezcla);
+                                        controladorDB.addProductoCombinado(numerTable, cod_prod, selected, precioFinal, cantidad[0], tipoMezcla);
                                 }
                             }
 
@@ -501,17 +480,14 @@ public class Combinados extends AppCompatActivity {
                         dialog.create();
                         dialog.show();
                         break;
+
                     case "Matusalem":
                         cod_prod = "MTS";
-                        compuesto = listaProducto.get(cod_prod);
-                        partes = compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble = Double.parseDouble(precio);
-                        nomProducto= partes[0];
+                        precioDouble = metodos.obtenerPrecio(listaProducto,cod_prod);
 
                         dialog_img.setImageResource(R.drawable.matusalem);
-                        dialog_title.setText(nomProducto);
-                        dialog_precio.setText("Precio: " + precio +"€");
+                        dialog_title.setText(selected);
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
                         dialog.setView(vista);
                         numberPicker.setMaxValue(20);
@@ -566,7 +542,7 @@ public class Combinados extends AppCompatActivity {
                                     }
 
                                     if (cantidad[0] != 0)
-                                        controladorDB.addProductoCombinado(numerTable, cod_prod, nomProducto, precioFinal, cantidad[0], tipoMezcla);
+                                        controladorDB.addProductoCombinado(numerTable, cod_prod, selected, precioFinal, cantidad[0], tipoMezcla);
                                 }
                             }
 
@@ -582,15 +558,10 @@ public class Combinados extends AppCompatActivity {
 
                     case "Ballantines":
                         cod_prod = "BLL";
-                        compuesto = listaProducto.get(cod_prod);
-                        partes = compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble = Double.parseDouble(precio);
-                        nomProducto= partes[0];
-
+                        precioDouble = metodos.obtenerPrecio(listaProducto,cod_prod);
                         dialog_img.setImageResource(R.drawable.ballantines);
-                        dialog_title.setText(nomProducto);
-                        dialog_precio.setText("Precio: " + precio +"€");
+                        dialog_title.setText(selected);
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
                         dialog.setView(vista);
                         numberPicker.setMaxValue(20);
@@ -645,7 +616,7 @@ public class Combinados extends AppCompatActivity {
                                     }
 
                                     if (cantidad[0] != 0)
-                                        controladorDB.addProductoCombinado(numerTable, cod_prod, nomProducto, precioFinal, cantidad[0], tipoMezcla);
+                                        controladorDB.addProductoCombinado(numerTable, cod_prod, selected, precioFinal, cantidad[0], tipoMezcla);
                                 }
                             }
 
@@ -658,15 +629,12 @@ public class Combinados extends AppCompatActivity {
 
                     case "Cutty Sark":
                         cod_prod = "CSK";
-                        compuesto = listaProducto.get(cod_prod);
-                        partes = compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble = Double.parseDouble(precio);
-                        nomProducto= partes[0];
+                        precioDouble = metodos.obtenerPrecio(listaProducto,cod_prod);
+
 
                         dialog_img.setImageResource(R.drawable.cutty_sark);
-                        dialog_title.setText(nomProducto);
-                        dialog_precio.setText("Precio: " + precio +"€");
+                        dialog_title.setText(selected);
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
                         dialog.setView(vista);
                         numberPicker.setMaxValue(20);
@@ -721,7 +689,7 @@ public class Combinados extends AppCompatActivity {
                                     }
 
                                     if (cantidad[0] != 0)
-                                        controladorDB.addProductoCombinado(numerTable, cod_prod, nomProducto, precioFinal, cantidad[0], tipoMezcla);
+                                        controladorDB.addProductoCombinado(numerTable, cod_prod, selected, precioFinal, cantidad[0], tipoMezcla);
                                 }
                             }
 
@@ -734,15 +702,11 @@ public class Combinados extends AppCompatActivity {
 
                     case "J&B":
                         cod_prod = "J&B";
-                        compuesto = listaProducto.get(cod_prod);
-                        partes = compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble = Double.parseDouble(precio);
-                        nomProducto= partes[0];
+                        precioDouble = metodos.obtenerPrecio(listaProducto,cod_prod);
 
                         dialog_img.setImageResource(R.drawable.jb);
-                        dialog_title.setText(nomProducto);
-                        dialog_precio.setText("Precio: " + precio +"€");
+                        dialog_title.setText(selected);
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
                         dialog.setView(vista);
                         numberPicker.setMaxValue(20);
@@ -797,7 +761,7 @@ public class Combinados extends AppCompatActivity {
                                     }
 
                                     if (cantidad[0] != 0)
-                                        controladorDB.addProductoCombinado(numerTable, cod_prod, nomProducto, precioFinal, cantidad[0], tipoMezcla);
+                                        controladorDB.addProductoCombinado(numerTable, cod_prod, selected, precioFinal, cantidad[0], tipoMezcla);
                                 }
                             }
 
@@ -810,15 +774,12 @@ public class Combinados extends AppCompatActivity {
 
                     case "Johnnie Walker":
                         cod_prod = "JHW";
-                        compuesto = listaProducto.get(cod_prod);
-                        partes = compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble = Double.parseDouble(precio);
-                        nomProducto= partes[0];
+                        precioDouble = metodos.obtenerPrecio(listaProducto,cod_prod);
+
 
                         dialog_img.setImageResource(R.drawable.johnnie_walker);
-                        dialog_title.setText(nomProducto);
-                        dialog_precio.setText("Precio: " + precio +"€");
+                        dialog_title.setText(selected);
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
                         dialog.setView(vista);
                         numberPicker.setMaxValue(20);
@@ -873,7 +834,7 @@ public class Combinados extends AppCompatActivity {
                                     }
 
                                     if (cantidad[0] != 0)
-                                        controladorDB.addProductoCombinado(numerTable, cod_prod, nomProducto, precioFinal, cantidad[0], tipoMezcla);
+                                        controladorDB.addProductoCombinado(numerTable, cod_prod, selected, precioFinal, cantidad[0], tipoMezcla);
                                 }
                             }
 
@@ -886,15 +847,12 @@ public class Combinados extends AppCompatActivity {
 
                     case "Johnnie Walker Black Label":
                         cod_prod = "JWB";
-                        compuesto = listaProducto.get(cod_prod);
-                        partes = compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble = Double.parseDouble(precio);
-                        nomProducto= partes[0];
+                        precioDouble = metodos.obtenerPrecio(listaProducto,cod_prod);
+
 
                         dialog_img.setImageResource(R.drawable.johnnie_walker_black);
-                        dialog_title.setText(nomProducto);
-                        dialog_precio.setText("Precio: " + precio +"€");
+                        dialog_title.setText(selected);
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
                         dialog.setView(vista);
                         numberPicker.setMaxValue(20);
@@ -949,7 +907,7 @@ public class Combinados extends AppCompatActivity {
                                     }
 
                                     if (cantidad[0] != 0)
-                                        controladorDB.addProductoCombinado(numerTable, cod_prod, nomProducto, precioFinal, cantidad[0], tipoMezcla);
+                                        controladorDB.addProductoCombinado(numerTable, cod_prod, selected, precioFinal, cantidad[0], tipoMezcla);
                                 }
                             }
 
@@ -962,15 +920,12 @@ public class Combinados extends AppCompatActivity {
 
                     case "Jack Daniels":
                         cod_prod = "JKD";
-                        compuesto = listaProducto.get(cod_prod);
-                        partes = compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble = Double.parseDouble(precio);
-                        nomProducto= partes[0];
+                        precioDouble = metodos.obtenerPrecio(listaProducto,cod_prod);
+
 
                         dialog_img.setImageResource(R.drawable.jack_daniels);
-                        dialog_title.setText(nomProducto);
-                        dialog_precio.setText("Precio: " + precio +"€");
+                        dialog_title.setText(selected);
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
                         dialog.setView(vista);
                         numberPicker.setMaxValue(20);
@@ -1025,7 +980,7 @@ public class Combinados extends AppCompatActivity {
                                     }
 
                                     if (cantidad[0] != 0)
-                                        controladorDB.addProductoCombinado(numerTable, cod_prod, nomProducto, precioFinal, cantidad[0], tipoMezcla);
+                                        controladorDB.addProductoCombinado(numerTable, cod_prod, selected, precioFinal, cantidad[0], tipoMezcla);
                                 }
                             }
 
@@ -1038,15 +993,12 @@ public class Combinados extends AppCompatActivity {
 
                     case "White Label":
                         cod_prod = "WHL";
-                        compuesto = listaProducto.get(cod_prod);
-                        partes = compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble = Double.parseDouble(precio);
-                        nomProducto= partes[0];
+                        precioDouble = metodos.obtenerPrecio(listaProducto,cod_prod);
+
 
                         dialog_img.setImageResource(R.drawable.white_label);
-                        dialog_title.setText(nomProducto);
-                        dialog_precio.setText("Precio: " + precio +"€");
+                        dialog_title.setText(selected);
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
                         dialog.setView(vista);
                         numberPicker.setMaxValue(20);
@@ -1101,7 +1053,7 @@ public class Combinados extends AppCompatActivity {
                                     }
 
                                     if (cantidad[0] != 0)
-                                        controladorDB.addProductoCombinado(numerTable, cod_prod, nomProducto, precioFinal, cantidad[0], tipoMezcla);
+                                        controladorDB.addProductoCombinado(numerTable, cod_prod, selected, precioFinal, cantidad[0], tipoMezcla);
                                 }
                             }
 
@@ -1116,15 +1068,12 @@ public class Combinados extends AppCompatActivity {
 
                     case "Beefeater":
                         cod_prod = "BEE";
-                        compuesto = listaProducto.get(cod_prod);
-                        partes = compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble = Double.parseDouble(precio);
-                        nomProducto= partes[0];
+                        precioDouble = metodos.obtenerPrecio(listaProducto,cod_prod);
+
 
                         dialog_img.setImageResource(R.drawable.beefeater);
-                        dialog_title.setText(nomProducto);
-                        dialog_precio.setText("Precio: " + precio +"€");
+                        dialog_title.setText(selected);
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
                         dialog.setView(vista);
                         numberPicker.setMaxValue(20);
@@ -1179,7 +1128,7 @@ public class Combinados extends AppCompatActivity {
                                     }
 
                                     if (cantidad[0] != 0)
-                                        controladorDB.addProductoCombinado(numerTable, cod_prod, nomProducto, precioFinal, cantidad[0], tipoMezcla);
+                                        controladorDB.addProductoCombinado(numerTable, cod_prod, selected, precioFinal, cantidad[0], tipoMezcla);
                                 }
                             }
 
@@ -1192,15 +1141,12 @@ public class Combinados extends AppCompatActivity {
 
                     case "Larios 12":
                         cod_prod = "L12";
-                        compuesto = listaProducto.get(cod_prod);
-                        partes = compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble = Double.parseDouble(precio);
-                        nomProducto= partes[0];
+                        precioDouble = metodos.obtenerPrecio(listaProducto,cod_prod);
+
 
                         dialog_img.setImageResource(R.drawable.larios_12);
-                        dialog_title.setText(nomProducto);
-                        dialog_precio.setText("Precio: " + precio +"€");
+                        dialog_title.setText(selected);
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
                         dialog.setView(vista);
                         numberPicker.setMaxValue(20);
@@ -1255,7 +1201,7 @@ public class Combinados extends AppCompatActivity {
                                     }
 
                                     if (cantidad[0] != 0)
-                                        controladorDB.addProductoCombinado(numerTable, cod_prod, nomProducto, precioFinal, cantidad[0], tipoMezcla);
+                                        controladorDB.addProductoCombinado(numerTable, cod_prod, selected, precioFinal, cantidad[0], tipoMezcla);
                                 }
                             }
 
@@ -1268,15 +1214,11 @@ public class Combinados extends AppCompatActivity {
 
                     case "Larios":
                         cod_prod = "LRS";
-                        compuesto = listaProducto.get(cod_prod);
-                        partes = compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble = Double.parseDouble(precio);
-                        nomProducto= partes[0];
+                        precioDouble = metodos.obtenerPrecio(listaProducto,cod_prod);
 
                         dialog_img.setImageResource(R.drawable.larios);
-                        dialog_title.setText(nomProducto);
-                        dialog_precio.setText("Precio: " + precio +"€");
+                        dialog_title.setText(selected);
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
                         dialog.setView(vista);
                         numberPicker.setMaxValue(20);
@@ -1331,7 +1273,7 @@ public class Combinados extends AppCompatActivity {
                                     }
 
                                     if (cantidad[0] != 0)
-                                        controladorDB.addProductoCombinado(numerTable, cod_prod, nomProducto, precioFinal, cantidad[0], tipoMezcla);
+                                        controladorDB.addProductoCombinado(numerTable, cod_prod, selected, precioFinal, cantidad[0], tipoMezcla);
                                 }
                             }
 
@@ -1346,15 +1288,12 @@ public class Combinados extends AppCompatActivity {
 
                     case "Absolut":
                         cod_prod = "ABT";
-                        compuesto = listaProducto.get(cod_prod);
-                        partes = compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble = Double.parseDouble(precio);
-                        nomProducto= partes[0];
+                        precioDouble = metodos.obtenerPrecio(listaProducto,cod_prod);
+
 
                         dialog_img.setImageResource(R.drawable.absoluts);
-                        dialog_title.setText(nomProducto);
-                        dialog_precio.setText("Precio: " + precio +"€");
+                        dialog_title.setText(selected);
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
                         dialog.setView(vista);
                         numberPicker.setMaxValue(20);
@@ -1409,7 +1348,7 @@ public class Combinados extends AppCompatActivity {
                                     }
 
                                     if (cantidad[0] != 0)
-                                        controladorDB.addProductoCombinado(numerTable, cod_prod, nomProducto, precioFinal, cantidad[0], tipoMezcla);
+                                        controladorDB.addProductoCombinado(numerTable, cod_prod, selected, precioFinal, cantidad[0], tipoMezcla);
                                 }
                             }
 
@@ -1422,15 +1361,11 @@ public class Combinados extends AppCompatActivity {
 
                     case "Eristoff":
                         cod_prod = "EFF";
-                        compuesto = listaProducto.get(cod_prod);
-                        partes = compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble = Double.parseDouble(precio);
-                        nomProducto= partes[0];
+                        precioDouble = metodos.obtenerPrecio(listaProducto,cod_prod);
 
                         dialog_img.setImageResource(R.drawable.absoluts);
-                        dialog_title.setText(nomProducto);
-                        dialog_precio.setText("Precio: " + precio +"€");
+                        dialog_title.setText(selected);
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
                         dialog.setView(vista);
                         numberPicker.setMaxValue(20);
@@ -1485,7 +1420,7 @@ public class Combinados extends AppCompatActivity {
                                     }
 
                                     if (cantidad[0] != 0)
-                                        controladorDB.addProductoCombinado(numerTable, cod_prod, nomProducto, precioFinal, cantidad[0], tipoMezcla);
+                                        controladorDB.addProductoCombinado(numerTable, cod_prod, selected, precioFinal, cantidad[0], tipoMezcla);
                                 }
                             }
 
@@ -1556,20 +1491,13 @@ public class Combinados extends AppCompatActivity {
     }
 
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        verCarrito();
-        return super.onOptionsItemSelected(item);
-    }
-
-
         private class ConnectMySql extends AsyncTask<String, Void, String> {
             String res = "";
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                Toast.makeText(Combinados.this, "Please wait...", Toast.LENGTH_SHORT)
+                Toast.makeText(Combinados.this, "Cargando Carta", Toast.LENGTH_SHORT)
                         .show();
 
             }
@@ -1578,7 +1506,6 @@ public class Combinados extends AppCompatActivity {
             protected String doInBackground(String... params) {
                 try {
                     Class.forName("com.mysql.jdbc.Driver");
-                    //Connection con = DriverManager.getConnection("jdbc:mysql://db4free.net:3306/easy_order", "ruben_admin", "anmarulo");
                     Connection con = DriverManager.getConnection("jdbc:mysql://188.127.174.120:3306/productos", "ruben", "ruben");
                     listaProducto = new HashMap<>();
                     visualizarProductosRon = new ArrayList<>();
@@ -1635,12 +1562,10 @@ public class Combinados extends AppCompatActivity {
                     rs = stR.executeQuery();
 
                     while (rs.next()) {
-                        //listaProducto.put(rs.getString(1), rs.getString(2) + ":" + rs.getDouble(3));
                         visualizarRefrescos.add(rs.getString(2));
                     }
-
-
                     con.close();
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     res = e.toString();
@@ -1683,11 +1608,17 @@ public class Combinados extends AppCompatActivity {
                 creando();
 
 
+
             }
         }
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        verCarrito();
+        return super.onOptionsItemSelected(item);
     }
 
     public void verCarrito(){

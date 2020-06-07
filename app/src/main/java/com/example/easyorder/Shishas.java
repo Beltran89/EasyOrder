@@ -4,9 +4,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -36,23 +39,24 @@ import android.widget.ExpandableListView.OnChildClickListener;
 public class Shishas extends AppCompatActivity {
 
     String numerTable, tipoStandard, tipoPremium;
-   ControladorDB controladorDB;
+    ControladorDB controladorDB;
     private HashMap<String, String> listaProducto;
     private ArrayList<String> visualizarProductosStandard, visualizarProductosPremium;
     List<String> groupList;
     List<String> childList;
     Map<String, List<String>> shishasCollection;
     ExpandableListView expListView;
+    Metodos metodos;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shishas);
+        getSupportActionBar().setTitle("Shishas");
 
         Shishas.ConnectMySql connectMySql = new Shishas.ConnectMySql();
         connectMySql.execute("");
-
         controladorDB = new ControladorDB(this);
 
         Bundle extra = getIntent().getExtras();
@@ -82,7 +86,9 @@ public class Shishas extends AppCompatActivity {
                 final String selected = (String) expListAdapter.getChild(
                         groupPosition, childPosition);
 
-
+                AlertDialog.Builder dialog = new AlertDialog.Builder(Shishas.this);
+                View vista = getLayoutInflater().inflate(R.layout.dialog_add, null);
+                metodos =  new Metodos();
                 final  String cod_prod;
                 final String codContr;
 
@@ -94,8 +100,7 @@ public class Shishas extends AppCompatActivity {
                 final String cod_producto;
                 final Insert insertar = new Insert();
 
-                AlertDialog.Builder dialog = new AlertDialog.Builder(Shishas.this);
-                View vista = getLayoutInflater().inflate(R.layout.dialog_add, null);
+
 
                 final TextView dialog_title =  vista.findViewById(R.id.titulo);
                 final TextView dialog_precio = vista.findViewById(R.id.precio_producto);
@@ -107,14 +112,8 @@ public class Shishas extends AppCompatActivity {
  ///////////////////////////       STANDARD    //////////////////////////////
                     case "Dos Manzanas":
                         cod_prod= "DMA";
-                        compuesto=listaProducto.get(cod_prod);
-                        partes =compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble= Double.parseDouble(precio);
-
 
                         dialog.setView(vista);
-
                         numberPicker.setMaxValue(20);
                         numberPicker.setMinValue(0);
 
@@ -128,7 +127,7 @@ public class Shishas extends AppCompatActivity {
 
                         dialog_img.setImageResource(R.drawable.dos_manzanas);
                         dialog_title.setText(visualizarProductosStandard.get(0));
-                        dialog_precio.setText("Precio: " + precio +"€");
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
 
 
@@ -137,7 +136,7 @@ public class Shishas extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
 
                                 if (cantidad[0]!=0)
-                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosStandard.get(0), precioDouble, cantidad[0]);
+                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosStandard.get(0), metodos.obtenerPrecio(listaProducto,cod_prod), cantidad[0]);
 
                             }
                         });
@@ -147,14 +146,8 @@ public class Shishas extends AppCompatActivity {
                         break;
                     case "Kiwi":
                         cod_prod= "KWI";
-                        compuesto=listaProducto.get(cod_prod);
-                        partes =compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble= Double.parseDouble(precio);
-
 
                         dialog.setView(vista);
-
                         numberPicker.setMaxValue(20);
                         numberPicker.setMinValue(0);
 
@@ -168,7 +161,7 @@ public class Shishas extends AppCompatActivity {
 
                         dialog_img.setImageResource(R.drawable.kiwi);
                         dialog_title.setText(visualizarProductosStandard.get(1));
-                        dialog_precio.setText("Precio: " + precio +"€");
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
 
 
@@ -177,7 +170,7 @@ public class Shishas extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
 
                                 if (cantidad[0]!=0)
-                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosStandard.get(1), precioDouble, cantidad[0]);
+                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosStandard.get(1), metodos.obtenerPrecio(listaProducto,cod_prod), cantidad[0]);
 
                             }
                         });
@@ -187,14 +180,8 @@ public class Shishas extends AppCompatActivity {
                         break;
                     case "Limon y Menta":
                         cod_prod= "LYM";
-                        compuesto=listaProducto.get(cod_prod);
-                        partes =compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble= Double.parseDouble(precio);
-
 
                         dialog.setView(vista);
-
                         numberPicker.setMaxValue(20);
                         numberPicker.setMinValue(0);
 
@@ -208,7 +195,7 @@ public class Shishas extends AppCompatActivity {
 
                         dialog_img.setImageResource(R.drawable.limon_menta);
                         dialog_title.setText(visualizarProductosStandard.get(2));
-                        dialog_precio.setText("Precio: " + precio +"€");
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
 
 
@@ -217,7 +204,7 @@ public class Shishas extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
 
                                 if (cantidad[0]!=0)
-                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosStandard.get(2), precioDouble, cantidad[0]);
+                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosStandard.get(2), metodos.obtenerPrecio(listaProducto,cod_prod), cantidad[0]);
 
                             }
                         });
@@ -227,14 +214,8 @@ public class Shishas extends AppCompatActivity {
                         break;
                     case "Melocoton":
                         cod_prod= "MLC";
-                        compuesto=listaProducto.get(cod_prod);
-                        partes =compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble= Double.parseDouble(precio);
-
 
                         dialog.setView(vista);
-
                         numberPicker.setMaxValue(20);
                         numberPicker.setMinValue(0);
 
@@ -248,7 +229,7 @@ public class Shishas extends AppCompatActivity {
 
                         dialog_img.setImageResource(R.drawable.melocon);
                         dialog_title.setText(visualizarProductosStandard.get(3));
-                        dialog_precio.setText("Precio: " + precio +"€");
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
 
 
@@ -257,7 +238,7 @@ public class Shishas extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
 
                                 if (cantidad[0]!=0)
-                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosStandard.get(3), precioDouble, cantidad[0]);
+                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosStandard.get(3), metodos.obtenerPrecio(listaProducto,cod_prod), cantidad[0]);
 
                             }
                         });
@@ -267,14 +248,8 @@ public class Shishas extends AppCompatActivity {
                         break;
                     case "Pomelo":
                         cod_prod= "PML";
-                        compuesto=listaProducto.get(cod_prod);
-                        partes =compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble= Double.parseDouble(precio);
-
 
                         dialog.setView(vista);
-
                         numberPicker.setMaxValue(20);
                         numberPicker.setMinValue(0);
 
@@ -288,16 +263,14 @@ public class Shishas extends AppCompatActivity {
 
                         dialog_img.setImageResource(R.drawable.pomelo);
                         dialog_title.setText(visualizarProductosStandard.get(4));
-                        dialog_precio.setText("Precio: " + precio +"€");
-
-
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
                         dialog.setPositiveButton("Añadir", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
                                 if (cantidad[0]!=0)
-                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosStandard.get(4), precioDouble, cantidad[0]);
+                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosStandard.get(4), metodos.obtenerPrecio(listaProducto,cod_prod), cantidad[0]);
 
                             }
                         });
@@ -307,18 +280,9 @@ public class Shishas extends AppCompatActivity {
                         break;
                     case "Sandia Helada":
                         cod_prod= "SAH";
-                        compuesto=listaProducto.get(cod_prod);
-                        partes =compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble= Double.parseDouble(precio);
-
-
-                        dialog.setView(vista);
 
                         numberPicker.setMaxValue(20);
                         numberPicker.setMinValue(0);
-
-
                         numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
                             @Override
                             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
@@ -328,7 +292,7 @@ public class Shishas extends AppCompatActivity {
 
                         dialog_img.setImageResource(R.drawable.sandia_helada);
                         dialog_title.setText(visualizarProductosStandard.get(5));
-                        dialog_precio.setText("Precio: " + precio +"€");
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
 
 
@@ -337,7 +301,7 @@ public class Shishas extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
 
                                 if (cantidad[0]!=0)
-                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosStandard.get(5), precioDouble, cantidad[0]);
+                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosStandard.get(5), metodos.obtenerPrecio(listaProducto,cod_prod), cantidad[0]);
 
                             }
                         });
@@ -345,21 +309,14 @@ public class Shishas extends AppCompatActivity {
                         dialog.create();
                         dialog.show();
                         break;
+
 ///////////////////////////////     PREMIUM       /////////////////////
                     case "Fruta de la Pasion y Menta":
                         cod_prod= "FPM";
-                        compuesto=listaProducto.get(cod_prod);
-                        partes =compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble= Double.parseDouble(precio);
-
 
                         dialog.setView(vista);
-
                         numberPicker.setMaxValue(20);
                         numberPicker.setMinValue(0);
-
-
                         numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
                             @Override
                             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
@@ -369,7 +326,7 @@ public class Shishas extends AppCompatActivity {
 
                         dialog_img.setImageResource(R.drawable.pasion_menta);
                         dialog_title.setText(visualizarProductosPremium.get(0));
-                        dialog_precio.setText("Precio: " + precio +"€");
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
 
 
@@ -378,7 +335,7 @@ public class Shishas extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
 
                                 if (cantidad[0]!=0)
-                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosPremium.get(0), precioDouble, cantidad[0]);
+                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosPremium.get(0), metodos.obtenerPrecio(listaProducto,cod_prod), cantidad[0]);
 
                             }
                         });
@@ -389,14 +346,7 @@ public class Shishas extends AppCompatActivity {
 
                     case "Gominolas de Corazones":
                         cod_prod= "GOC";
-                        compuesto=listaProducto.get(cod_prod);
-                        partes =compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble= Double.parseDouble(precio);
-
-
                         dialog.setView(vista);
-
                         numberPicker.setMaxValue(20);
                         numberPicker.setMinValue(0);
 
@@ -410,16 +360,14 @@ public class Shishas extends AppCompatActivity {
 
                         dialog_img.setImageResource(R.drawable.gominolas_corazones);
                         dialog_title.setText(visualizarProductosPremium.get(1));
-                        dialog_precio.setText("Precio: " + precio +"€");
-
-
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
                         dialog.setPositiveButton("Añadir", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
                                 if (cantidad[0]!=0)
-                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosPremium.get(1), precioDouble, cantidad[0]);
+                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosPremium.get(1), metodos.obtenerPrecio(listaProducto,cod_prod), cantidad[0]);
 
                             }
                         });
@@ -430,18 +378,10 @@ public class Shishas extends AppCompatActivity {
 
                     case "Limon, Cardamomo y Uva":
                         cod_prod= "LCU";
-                        compuesto=listaProducto.get(cod_prod);
-                        partes =compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble= Double.parseDouble(precio);
-
 
                         dialog.setView(vista);
-
                         numberPicker.setMaxValue(20);
                         numberPicker.setMinValue(0);
-
-
                         numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
                             @Override
                             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
@@ -451,16 +391,13 @@ public class Shishas extends AppCompatActivity {
 
                         dialog_img.setImageResource(R.drawable.limon_cardamomo_uva);
                         dialog_title.setText(visualizarProductosPremium.get(2));
-                        dialog_precio.setText("Precio: " + precio +"€");
-
-
-
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
                         dialog.setPositiveButton("Añadir", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
                                 if (cantidad[0]!=0)
-                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosPremium.get(2), precioDouble, cantidad[0]);
+                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosPremium.get(2), metodos.obtenerPrecio(listaProducto,cod_prod), cantidad[0]);
 
                             }
                         });
@@ -471,14 +408,7 @@ public class Shishas extends AppCompatActivity {
 
                     case "Licor Dulce de Limoncello":
                         cod_prod= "LDL";
-                        compuesto=listaProducto.get(cod_prod);
-                        partes =compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble= Double.parseDouble(precio);
-
-
                         dialog.setView(vista);
-
                         numberPicker.setMaxValue(20);
                         numberPicker.setMinValue(0);
 
@@ -492,7 +422,7 @@ public class Shishas extends AppCompatActivity {
 
                         dialog_img.setImageResource(R.drawable.limoncello);
                         dialog_title.setText(visualizarProductosPremium.get(3));
-                        dialog_precio.setText("Precio: " + precio +"€");
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
 
 
@@ -501,7 +431,7 @@ public class Shishas extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
 
                                 if (cantidad[0]!=0)
-                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosPremium.get(3), precioDouble, cantidad[0]);
+                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosPremium.get(3), metodos.obtenerPrecio(listaProducto,cod_prod), cantidad[0]);
 
                             }
                         });
@@ -512,14 +442,8 @@ public class Shishas extends AppCompatActivity {
 
                     case "Melon Dulce":
                         cod_prod= "MDL";
-                        compuesto=listaProducto.get(cod_prod);
-                        partes =compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble= Double.parseDouble(precio);
-
 
                         dialog.setView(vista);
-
                         numberPicker.setMaxValue(20);
                         numberPicker.setMinValue(0);
 
@@ -533,16 +457,13 @@ public class Shishas extends AppCompatActivity {
 
                         dialog_img.setImageResource(R.drawable.melon_dulce);
                         dialog_title.setText(visualizarProductosPremium.get(4));
-                        dialog_precio.setText("Precio: " + precio +"€");
-
-
-
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
                         dialog.setPositiveButton("Añadir", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
                                 if (cantidad[0]!=0)
-                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosPremium.get(4), precioDouble, cantidad[0]);
+                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosPremium.get(4), metodos.obtenerPrecio(listaProducto,cod_prod), cantidad[0]);
 
                             }
                         });
@@ -553,18 +474,9 @@ public class Shishas extends AppCompatActivity {
 
                     case "Melocoton, Mango, Menta y Hielo":
                         cod_prod= "MMM";
-                        compuesto=listaProducto.get(cod_prod);
-                        partes =compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble= Double.parseDouble(precio);
-
-
                         dialog.setView(vista);
-
                         numberPicker.setMaxValue(20);
                         numberPicker.setMinValue(0);
-
-
                         numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
                             @Override
                             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
@@ -574,16 +486,14 @@ public class Shishas extends AppCompatActivity {
 
                         dialog_img.setImageResource(R.drawable.melocon_mango_menta_hielo);
                         dialog_title.setText(visualizarProductosPremium.get(5));
-                        dialog_precio.setText("Precio: " + precio +"€");
-
-
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
                         dialog.setPositiveButton("Añadir", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
                                 if (cantidad[0]!=0)
-                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosPremium.get(5), precioDouble, cantidad[0]);
+                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosPremium.get(5), metodos.obtenerPrecio(listaProducto,cod_prod), cantidad[0]);
 
                             }
                         });
@@ -594,18 +504,9 @@ public class Shishas extends AppCompatActivity {
 
                     case "Ositos de Gominola":
                         cod_prod= "OSG";
-                        compuesto=listaProducto.get(cod_prod);
-                        partes =compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble= Double.parseDouble(precio);
-
-
                         dialog.setView(vista);
-
                         numberPicker.setMaxValue(20);
                         numberPicker.setMinValue(0);
-
-
                         numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
                             @Override
                             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
@@ -615,16 +516,14 @@ public class Shishas extends AppCompatActivity {
 
                         dialog_img.setImageResource(R.drawable.ositos_gominola);
                         dialog_title.setText(visualizarProductosPremium.get(6));
-                        dialog_precio.setText("Precio: " + precio +"€");
-
-
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
                         dialog.setPositiveButton("Añadir", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
                                 if (cantidad[0]!=0)
-                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosPremium.get(6), precioDouble, cantidad[0]);
+                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosPremium.get(6), metodos.obtenerPrecio(listaProducto,cod_prod), cantidad[0]);
 
                             }
                         });
@@ -635,18 +534,9 @@ public class Shishas extends AppCompatActivity {
 
                     case "Pomelo y Mandarina":
                         cod_prod= "PMM";
-                        compuesto=listaProducto.get(cod_prod);
-                        partes =compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble= Double.parseDouble(precio);
-
-
                         dialog.setView(vista);
-
                         numberPicker.setMaxValue(20);
                         numberPicker.setMinValue(0);
-
-
                         numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
                             @Override
                             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
@@ -656,37 +546,25 @@ public class Shishas extends AppCompatActivity {
 
                         dialog_img.setImageResource(R.drawable.pomelo_mandarina);
                         dialog_title.setText(visualizarProductosPremium.get(6));
-                        dialog_precio.setText("Precio: " + precio +"€");
-
-
-
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
                         dialog.setPositiveButton("Añadir", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
                                 if (cantidad[0]!=0)
-                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosPremium.get(6), precioDouble, cantidad[0]);
-
+                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosPremium.get(6), metodos.obtenerPrecio(listaProducto,cod_prod), cantidad[0]);
                             }
                         });
                         dialog.setNegativeButton("Cancelar", null);
                         dialog.create();
                         dialog.show();
                         break;
+
                     case "Tarta de Limon":
                         cod_prod= "TLM";
-                        compuesto=listaProducto.get(cod_prod);
-                        partes =compuesto.split(":");
-                        precio = partes[1];
-                        precioDouble= Double.parseDouble(precio);
-
-
                         dialog.setView(vista);
-
                         numberPicker.setMaxValue(20);
                         numberPicker.setMinValue(0);
-
-
                         numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
                             @Override
                             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
@@ -696,7 +574,7 @@ public class Shishas extends AppCompatActivity {
 
                         dialog_img.setImageResource(R.drawable.tarta_limon);
                         dialog_title.setText(visualizarProductosPremium.get(7));
-                        dialog_precio.setText("Precio: " + precio +"€");
+                        dialog_precio.setText("Precio: " + metodos.obtenerPrecio(listaProducto,cod_prod).toString() +"€");
 
 
 
@@ -705,7 +583,7 @@ public class Shishas extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
 
                                 if (cantidad[0]!=0)
-                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosPremium.get(7), precioDouble, cantidad[0]);
+                                    controladorDB.addProducto(numerTable,cod_prod, visualizarProductosPremium.get(7), metodos.obtenerPrecio(listaProducto,cod_prod), cantidad[0]);
 
                             }
                         });
@@ -713,16 +591,12 @@ public class Shishas extends AppCompatActivity {
                         dialog.create();
                         dialog.show();
                         break;
-
-
                     default:
 
                         break;
 
                 }
 
-                Toast.makeText(getBaseContext(), selected, Toast.LENGTH_LONG)
-                        .show();
 
                 return true;
             }
@@ -769,13 +643,7 @@ public class Shishas extends AppCompatActivity {
         // Convert the dps to pixels, based on density scale
         return (int) (pixels * scale + 0.5f);
     }
-/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.activity_main, menu);
-        return true;
-    }*/
+
 
     private class ConnectMySql extends AsyncTask<String, Void, String> {
         String res = "";
@@ -783,7 +651,7 @@ public class Shishas extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            Toast.makeText(Shishas.this, "Please wait...", Toast.LENGTH_SHORT)
+            Toast.makeText(Shishas.this, "Cargando Carta", Toast.LENGTH_SHORT)
                     .show();
 
         }
@@ -798,8 +666,6 @@ public class Shishas extends AppCompatActivity {
                 visualizarProductosStandard = new ArrayList<>();
                 visualizarProductosPremium= new ArrayList<>();
 
-
-               // String result = numerTable;
                 PreparedStatement st = con.prepareStatement("SELECT * FROM shishas WHERE tipo=?");
                 tipoStandard = "standard";
                 st.setString(1, tipoStandard);
@@ -820,8 +686,6 @@ public class Shishas extends AppCompatActivity {
                     visualizarProductosPremium.add(rs2.getString(2));
                 }
 
-
-
                 con.close();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -837,8 +701,6 @@ public class Shishas extends AppCompatActivity {
             String [] standard = new String[numero];
             for (int i=0; i<visualizarProductosStandard.size(); i++) {
                 standard[i] = visualizarProductosStandard.get(i);
-
-
             }
 
             int numeroP = visualizarProductosPremium.size();
@@ -853,6 +715,20 @@ public class Shishas extends AppCompatActivity {
 
 
         }
+    }
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        verCarrito();
+        return super.onOptionsItemSelected(item);
+    }
+    public void verCarrito(){
+        Intent carrito = new Intent(this, Carrito.class);
+        carrito.putExtra("mesaNum", numerTable);
+        startActivity(carrito);
     }
 
 }
